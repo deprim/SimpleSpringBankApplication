@@ -1,5 +1,10 @@
 package controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public enum MenuOptions {
 
     USER_CREATE,
@@ -10,10 +15,14 @@ public enum MenuOptions {
     ACCOUNT_TRANSFER,
     ACCOUNT_WITHDRAW;
 
-    public static void getMenuOptions(){
-
+    public static List<MenuOptions> getMenuOptions(){
+        List<MenuOptions> menuOption = new ArrayList<>();
+        menuOption.addAll(Arrays.asList(MenuOptions.values()));
+        return menuOption;
 
     }
+
+
 
 
 }

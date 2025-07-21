@@ -1,9 +1,9 @@
-package controller;
+package commands;
 
 public interface MenuCommand {
 
     public void execute();
 
-    public void displayMenuOptions();
+    public String getCommandName();
 
 }
