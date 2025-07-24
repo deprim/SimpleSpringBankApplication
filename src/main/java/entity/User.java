@@ -46,8 +46,10 @@ public class User {
 
 
 
+
+
     @Override
     public String toString() {
-        return "ID: " + getId() + " | Login: " + getLogin() + "Accounts: " + getAccounts();
+        return "ID: " + getId() + " | Login: " + getLogin() + " | Accounts: " + getAccounts();
     }
 }

@@ -39,7 +39,7 @@ public class UserService {
                 userList.add(currentUser);
 
                 // create defauult account for user
-                currentUser.setAccounts(accountService.createDefaultAccount(currentUser));
+                accountService.createDefaultAccount(currentUser);
 
                 System.out.println(currentUser);
 
@@ -58,5 +58,7 @@ public class UserService {
 
     }
 
-
+    public List<User> getUserList() {
+        return userList;
+    }
 }
