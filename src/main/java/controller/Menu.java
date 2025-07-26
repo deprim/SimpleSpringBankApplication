@@ -40,6 +40,11 @@ public class Menu  {
             }
 
             selectedMenuOption = userInputReader.readString();
+
+            if (selectedMenuOption == null || selectedMenuOption.trim().isEmpty()) {
+                continue;
+            }
+
             execute(selectedMenuOption);
         }
     }

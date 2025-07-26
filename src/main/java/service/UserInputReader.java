@@ -20,9 +20,12 @@ public class UserInputReader {
 
     public String readString(){
         return input.nextLine();
+
     }
 
     public Integer readInt(){
-        return input.nextInt();
+        Integer value = input.nextInt();
+        input.nextLine();
+        return value;
     }
 }

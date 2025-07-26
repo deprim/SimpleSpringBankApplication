@@ -3,6 +3,7 @@ package commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import service.UserInputReader;
+import service.UserRegistartionService;
 import service.UserService;
 
 
@@ -10,14 +11,15 @@ import service.UserService;
 public class UserCreateCommand implements MenuCommand {
 
 
-    private final UserService userService;
+
     private final UserInputReader userInputReader;
+    private final UserRegistartionService userRegistartionService;
 
 
     @Autowired
-    public UserCreateCommand(UserService userService, UserInputReader userInputReader) {
-        this.userService = userService;
+    public UserCreateCommand(UserInputReader userInputReader, UserRegistartionService userRegistartionService) {
         this.userInputReader = userInputReader;
+        this.userRegistartionService = userRegistartionService;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class UserCreateCommand implements MenuCommand {
         String login;
         System.out.println("Enter login for new user: ");
         login = userInputReader.readString();
-        userService.createUser(login);
+        userRegistartionService.createUser(login);
 
     }
 

@@ -8,8 +8,8 @@ import service.UserService;
 @Component
 public class UserShowAllCommand implements MenuCommand {
 
-    private UserService userService;
-    private UserInputReader userInputReader;
+    private final UserService userService;
+    private final UserInputReader userInputReader;
 
     public UserShowAllCommand(UserService userService, UserInputReader userInputReader) {
         this.userService = userService;

@@ -23,7 +23,7 @@ public class AccountCloseCommand implements MenuCommand {
     @Override
     public void execute() {
 
-       
+       accountService.closeAccount();
 
     }
 

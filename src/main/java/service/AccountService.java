@@ -15,30 +15,39 @@ public class AccountService {
     @Value("${account.default-ammount}")
     Double defaultMoneyAmount;
     List<Account> accountList;
+    List<User> userList;
     UserInputReader userInputReader;
 
     @Autowired
-    public AccountService(List<Account> accountList, UserInputReader userInputReader) {
+    public AccountService(List<Account> accountList, UserInputReader userInputReader, List<User> userList) {
         this.accountList = accountList;
         this.userInputReader = userInputReader;
+        this.userList = userList;
     }
 
 
-    public void createDefaultAccount(User user){
+//    public void createDefaultAccount(User user){
+//
+//        // Creating default account for him
+//        Account account = new Account();
+//        account.setId(accountList.size());
+//        account.setMoneyAmmount(defaultMoneyAmount);
+//        account.setUserId(user.getId());
+//        user.setAccounts(account);
+//        accountList.add(account);
+//
+//
+//
+//    }
 
-        // Creating default account for him
-        Account account = new Account();
-        account.setId(accountList.size());
-        account.setMoneyAmmount(defaultMoneyAmount);
-        account.setUserId(user.getId());
-        user.setAccounts(account);
-        accountList.add(account);
+    public void createAccount(Integer choosedUserId){
+
+        User user = userList.stream()
+                .filter(u -> u.getId().equals(choosedUserId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("User with ID " + choosedUserId + " not found"));
 
 
-
-    }
-
-    public void createAccount(User user){
         Account account = new Account();
         account.setId(accountList.size());
         account.setMoneyAmmount(defaultMoneyAmount);
@@ -53,20 +62,32 @@ public class AccountService {
 
         System.out.println("Enter account ID to close:" );
         Integer accountId = userInputReader.readInt();
-        User user =
+        Account accountOfUser = accountList.get(accountId);
+        User ownerOfAccount = userList.get(accountOfUser.getUserId());
 
-        if(user.getAccounts().size() > 1){
 
+        if(ownerOfAccount.getAccounts().size() > 1){
+
+            // get count of user's accounts
+            Integer countOfUserAccounts = ownerOfAccount.getAccounts().size();
             // take previous user's Account ID;
-            Integer firstAccontId = user.getAccounts().getFirst().getId();
+            Integer previousAccountId = ownerOfAccount.getAccounts().get(0).getId();
             // take money ammount from account that we will delete
-            Double accountMoneyAmmount = user.getAccounts().get(accountId).getMoneyAmmount();
+//            Double accountMoneyAmmount = ownerOfAccount.getAccounts().get(previousAccountId).getMoneyAmmount();
             // delete account
-            user.getAccounts().remove(user.getAccounts().get(accountId));
-            // money from deleted account + first account
-            Double moneyFromBoth = user.getAccounts().get(firstAccontId).getMoneyAmmount() + accountMoneyAmmount;
+            Account accountToDelete = ownerOfAccount.getAccounts()
+                            .stream()
+                            .filter(acc -> acc.getId()
+                            .equals(accountId))
+                            .findFirst().orElse(null);
+
+//            ownerOfAccount.getAccounts().remove(ownerOfAccount.getAccounts().get(accountId));
+            Double deletedAccountMoneyAmmount = accountToDelete.getMoneyAmmount();
+            ownerOfAccount.getAccounts().remove(accountToDelete);
+            // money from deleted account + previous account
+            Double moneyFromBoth = ownerOfAccount.getAccounts().get(previousAccountId).getMoneyAmmount() + deletedAccountMoneyAmmount;
             //
-            user.getAccounts().get(firstAccontId).setMoneyAmmount(moneyFromBoth);
+            ownerOfAccount.getAccounts().get(previousAccountId).setMoneyAmmount(moneyFromBoth);
 
         } else {
             System.out.println("Account ID not found or it's your last account");
@@ -74,5 +95,13 @@ public class AccountService {
 
 
 
+    }
+
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public List<Account> getAccountList() {
+        return accountList;
     }
 }
