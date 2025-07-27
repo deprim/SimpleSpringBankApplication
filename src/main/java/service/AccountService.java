@@ -1,5 +1,6 @@
 package service;
 
+import commands.AccountDepositCommand;
 import entity.Account;
 import entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ public class AccountService {
 
     @Value("${account.default-ammount}")
     Double defaultMoneyAmount;
+    @Value("10")
+    Double defaultComission;
     List<Account> accountList;
     List<User> userList;
     UserInputReader userInputReader;
@@ -96,6 +99,93 @@ public class AccountService {
 
 
     }
+
+
+    public void depositAccount(){
+
+        System.out.println("Enter account ID: ");
+        Integer choosedAccountId = userInputReader.readInt();
+        System.out.println("Enter amount to deposit: ");
+        Double ammountToDeposit = userInputReader.readDouble();
+
+
+        Account account = accountList
+                .stream()
+                .filter(acc -> acc.getId()
+                .equals(choosedAccountId))
+                .findFirst().orElse(null);
+
+        if (account == null){
+            System.out.println("Account with such ID doesn't exist");
+        } else {
+            account.setMoneyAmmount(account.getMoneyAmmount() + ammountToDeposit);
+        }
+
+
+        System.out.println("Ammount " + ammountToDeposit + " deposited to accpimt ID: " + choosedAccountId);
+
+    }
+
+    public void accountTransfer(){
+
+        System.out.println("Enter source account ID: ");
+        Integer sourceId = userInputReader.readInt();
+        System.out.println("Enter target account ID: ");
+        Integer targetId = userInputReader.readInt();
+        System.out.println("Enter amount to transfer");
+        Double amountToTransfer = userInputReader.readDouble();
+
+        Account sourceAccount = accountList
+                .stream()
+                .filter(acc -> acc.getId().equals(sourceId))
+                .findFirst().orElse(null);
+
+        Account targetAccount = accountList
+                .stream()
+                .filter(acc -> acc.getId().equals(targetId))
+                .findFirst().orElse(null);
+
+        if (sourceAccount == null || targetAccount == null){
+            System.out.println("Such account ID doesn't exist");
+        } else if (sourceAccount.getMoneyAmmount() < amountToTransfer) {
+            System.out.println("Source account don't have such money amount to transfer, source acount money amount is: " + sourceAccount.getMoneyAmmount());
+        } else if (sourceAccount.getUserId() != targetAccount.getUserId()) {
+            sourceAccount.setMoneyAmmount(sourceAccount.getMoneyAmmount() - amountToTransfer);
+            targetAccount.setMoneyAmmount(targetAccount.getMoneyAmmount() + amountToTransfer - defaultComission);
+            System.out.println("Ammount " + (amountToTransfer - defaultComission) + " transfered from account ID " + sourceId + " to account ID " + targetId);
+
+        } else {
+            sourceAccount.setMoneyAmmount(sourceAccount.getMoneyAmmount() - amountToTransfer);
+            targetAccount.setMoneyAmmount(targetAccount.getMoneyAmmount() + amountToTransfer);
+            System.out.println("Ammount " + amountToTransfer + " transfered from account ID " + sourceId + " to account ID " + targetId);
+        }
+
+    }
+
+    public void accountWithdraw(){
+
+        System.out.println("Enter account ID to withdraw from: ");
+        Integer choosedId = userInputReader.readInt();
+        System.out.println("Enter amount to withdraw: ");
+        Double amountToWithdraw = userInputReader.readDouble();
+
+        Account account = accountList
+                .stream()
+                .filter(acc -> acc.getId().equals(choosedId))
+                .findFirst().orElse(null);
+
+        if (account == null || account.getMoneyAmmount() < amountToWithdraw){
+            System.out.println("Account doesn't exists or don't have such ammount of money");
+        } else {
+            account.setMoneyAmmount(account.getMoneyAmmount()-amountToWithdraw);
+            System.out.println("Amount of " + amountToWithdraw + " was withdraw from account ID " + choosedId);
+        }
+
+
+    }
+
+
+
 
     public List<User> getUserList() {
         return userList;

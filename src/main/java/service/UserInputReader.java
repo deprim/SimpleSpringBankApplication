@@ -28,4 +28,10 @@ public class UserInputReader {
         input.nextLine();
         return value;
     }
+
+    public Double readDouble(){
+        Double value = input.nextDouble();
+        input.nextLine();
+        return value;
+    }
 }
